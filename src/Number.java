@@ -1,11 +1,13 @@
 public class Number {
     int base;
     boolean negative;
+    int[] num;
 
-    public Number(String value, int base, boolean negative) {
+    public Number(String value, int base, boolean negative, int arrayLength) {
         // @TODO add to local file representation
         this.base = base;
         this.negative = negative;
+        this.num = new int[arrayLength];
     }
 
     public int getLength() {
@@ -17,6 +19,6 @@ public class Number {
     }
 
     public int getDigit(int index) {
-        return 0; // @TODO implement
+        return num[index]; // @TODO implement
     }
 }
