@@ -5,19 +5,20 @@ import java.util.Scanner;
 /**
  * Created by Stefan on 7-9-2017.
  */
+
 public class IOHandler {
+
+    public boolean HasNext;
+    public String operation;
+    public Number x;
+    public Number y;
 
     File file;
     Scanner sc;
-    Number x;
-    Number y;
     int base;
 
-    public IOHandler(Number a, Number b) {
+    public IOHandler() {
 
-
-        this.x = a;
-        this.y = b;
         file = new File("example.txt");
 
         try {
@@ -36,7 +37,7 @@ public class IOHandler {
         base = 1;
         boolean gotNumbers = false;
 
-        //loop until there is no more input left
+        //loop until there is no more input or until the numbers are found
         while(sc.hasNext() && !gotNumbers) {
 
             String s = sc.next();
@@ -47,40 +48,40 @@ public class IOHandler {
                     break;
                 case "[add]":
                     //notify
+                    operation = s;
                     System.out.println(s + " = add");
                     break;
                 case "[subtract]":
+                    operation = s;
                     System.out.println(s + " = subtract");
                     break;
                 case "[multiply]":
+                    operation = s;
                     System.out.println(s + " = multiply");
                     break;
                 case "[karatsuba]":
+                    operation = s;
                     System.out.println(s + " = karatsuba");
                     break;
                 case "[x]":
                     System.out.println("got x");
+                    x = initNumber(x);
                     break;
                 case "[y]":
                     System.out.println("got y and x");
-                    gotNumbers = true;
+                    y = initNumber(y);
                     break;
                 case "[answer]":
+                    System.out.println("comparing answers");
                     break;
                 default:
                     sc.nextLine();
                     break;
             }
 
-            if (gotNumbers) {
-
-
-                //TODO: perform the specified operation on the given integers
-
-
-                //gotNumbers = false;
-            }
         }
+
+        HasNext = sc.hasNext();
 
 
 
@@ -93,8 +94,10 @@ public class IOHandler {
     *  create new Number with that word size and the array
     *
      */
-    void initNumber (Number a) {
+    Number initNumber (Number a) {
 
+        a = new Number("", base, false, 0);
+        return a;
 
 
     }
@@ -108,6 +111,7 @@ public class IOHandler {
         return n;
 
     }
-
-
+    public void print(Number a) {
+        System.out.println("print");
+    }
 }

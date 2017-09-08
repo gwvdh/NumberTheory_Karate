@@ -3,16 +3,33 @@
  */
 public class Main {
 
-    Number x;
-    Number y;
-    IOHandler IO = new IOHandler(x, y);
+
+    IOHandler IO = new IOHandler();
 
     void run() {
 
-        IO.readNext();
-        IO.readNext();
-        IO.readNext();
-        IO.readNext();
+        while(IO.HasNext) {
+            Number c = null;
+            IO.readNext();
+
+            switch (IO.operation) {
+                case "[add]":
+                    // TODO: set c to result of add(IO.x, IO.y)
+                    break;
+                case "[subtract]":
+                    // TODO: set c to result of sub(IO.x, IO.y)
+                    break;
+                case "[multiply]":
+                    // TODO: set c to result of mul(IO.x, IO.y)
+                    break;
+                case "[karatsuba]":
+                    // TODO: set c to result of kar(IO.x, IO.y)
+                    break;
+                default:
+                    break;
+            }
+            IO.print(c);
+        }
 
     }
 
