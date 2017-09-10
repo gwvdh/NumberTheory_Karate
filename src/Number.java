@@ -3,7 +3,7 @@ public class Number {
     boolean negative;
     int[] num;
 
-    public Number(String value, int base, boolean negative, int arrayLength) {
+    public Number(int[] value, int base, boolean negative, int arrayLength) {
         // @TODO add to local file representation
         this.base = base;
         this.negative = negative;

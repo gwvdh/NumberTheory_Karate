@@ -3,7 +3,7 @@
  */
 public class Main {
 
-
+    Calc op = new Calc();
     IOHandler IO = new IOHandler();
 
     void run() {
@@ -11,7 +11,7 @@ public class Main {
         while(IO.HasNext) {
             Number c = null;
             IO.readNext();
-
+            // IO.x is a number, same for IO.y
             switch (IO.operation) {
                 case "[add]":
                     // TODO: set c to result of add(IO.x, IO.y)
@@ -37,6 +37,7 @@ public class Main {
 
         Main program = new Main();
         program.run();
+
 
     }
 
