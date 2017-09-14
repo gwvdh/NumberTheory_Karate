@@ -87,8 +87,47 @@ public class Calc {
         return numberResult;
     }
 
-    public Number multiply(Number n1, Number n2) {
-        return null; // @TODO Implement
+    /**
+     * Multiplies two numbers to each other according to algorithm 1.3 of the lecture notes (Naive multiplication)
+     * @Param n1    The first number
+     * @Param n2    The second number
+     * @Pre {@code n1 != null && n2 != null}
+     * @Throws NullPointerException if {@code n1 == null || n2 == null}
+     * @Return Number numberResult where {@code numberResult = n1*n2}
+     *
+     */
+    public Number multiply(Number n1, Number n2) throws NullPointerException{
+        if(n1==null || n2==null){   // Preconditions
+            throw new NullPointerException("Can not add to null");
+        }
+        int m = n1.getLength();
+        int n = n2.getLength();
+
+        int[] result = new int[n1.getLength()+n2.getLength()-1]; // In algorithm denoted as z
+        for(int i : result){ //Set all elements in the result array to 0
+            result[i] = 0;
+        }
+        int base = n1.base;
+        int carry = 0;
+        for(int i=0; i<m; i++){ //Get elements from one number, multiply with numbers from the other
+            for(int j=0; j<n; j++){
+                int t = result[i+j]+n1.num[i]*n2.num[j]+carry;
+                carry = t/base;
+                result[i+j] = t-carry*base;
+            }
+            result[i+n] = carry;
+        }
+        int k;
+        if(result[m+n-1] == 0){
+            k = m+n-2;
+        } else {
+            k = m+n-1;
+        }
+        Number numberResult = new Number("", base, n1.getNegative() ^ n2.getNegative(), k);
+        for(int i=1; i<k-1; i++){
+            numberResult.num[i-1] = result[k-i];
+        }
+        return numberResult;
     }
 
     public Number karatsuba(Number n1, Number n2) {
