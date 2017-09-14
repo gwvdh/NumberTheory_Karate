@@ -1,3 +1,5 @@
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class NumberTest {
@@ -98,4 +100,25 @@ class NumberTest {
         }
     }
 
+
+    @Test
+    void testToString() {
+        // Test positive numbers
+        toStringTest(new Number(new int[] {0}, 5, false), "0");
+        toStringTest(new Number(new int[] {1}, 5, false), "1");
+        toStringTest(new Number(new int[] {0,4}, 5, false), "40");
+        toStringTest(new Number(new int[] {0,5,1,2,4,9,4}, 5, false), "4942150");
+        toStringTest(new Number(new int[] {11,15}, 16, false), "fb"); // Hexadecimal
+
+        // Test negative numbers
+        toStringTest(new Number(new int[] {0}, 5, true), "-0");
+        toStringTest(new Number(new int[] {1}, 5, true), "-1");
+        toStringTest(new Number(new int[] {0,4}, 5, true), "-40");
+        toStringTest(new Number(new int[] {0,5,1,2,4,9,4}, 5, true), "-4942150");
+        toStringTest(new Number(new int[] {11,15}, 16, true), "-fb"); // Hexadecimal
+    }
+
+    void toStringTest(Number n, String expected) {
+        assertEquals(n.toString(), expected);
+    }
 }

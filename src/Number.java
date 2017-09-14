@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Represents large signed integer numbers.
  */
@@ -122,4 +124,33 @@ public class Number implements Comparable<Number> {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+
+        // Add the minus sign, if required.
+        if (negative) {
+            output.append("-");
+        }
+
+        // Add all the digits.
+        for (int i = num.length - 1; i >= 0; i--) {
+            if (num[i] < 10) {
+                output.append(num[i]);
+            } else {
+//                char output;
+//                switch (num[i]) {
+//                    case 10:
+//                        output = 'a';
+//                    break;
+//                    case 11:
+//                        output = 'b';
+//                    break;
+//                }
+                output.append(Integer.toString(num[i], getBase()));
+            }
+        }
+
+        return output.toString();
+    }
 }

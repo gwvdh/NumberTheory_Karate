@@ -124,17 +124,12 @@ public class IOHandler {
 
     /**
      * @param  p word
-     * @return n == integer representation of p
+     * @return Integer representation of {@code p}
      */
     int determineNumber(String p) {
 
-        int n = Integer.parseInt(p, base);
-        return n;
+        return Integer.parseInt(p, base);
 
-    }
-
-    String getString(Number a, int index) {
-        return Integer.toString(a.getDigit(index), a.getBase());
     }
 
     /**
@@ -143,18 +138,6 @@ public class IOHandler {
      *
      */
     public void print(Number a) {
-        String out = "[answer] ";
-
-        //add the minus sign if negative
-        if (a.getNegative()) {
-            out += "-";
-        }
-
-        //continuously get the string of some number at index i and append
-        for (int i = 0; i < a.getLength(); i++) {
-            out += getString(a, i);
-        }
-
-        System.out.println(out);
+        System.out.println("[answer] " + a.toString());
     }
 }
