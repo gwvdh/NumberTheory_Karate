@@ -4,7 +4,6 @@ public class Number implements Comparable<Number> {
     int[] num;
 
     public Number(int[] value, int base, boolean negative) {
-        // @TODO add to local file representation
         this.base = base;
         this.negative = negative;
         this.num = value.clone();
