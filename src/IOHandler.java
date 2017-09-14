@@ -117,7 +117,7 @@ public class IOHandler {
 
 
         //use the array to create a new number
-        a = new Number(numArray, base, negative, numArray.length);
+        a = new Number(numArray, base, negative);
         return a;
 
     }
