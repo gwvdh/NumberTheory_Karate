@@ -130,9 +130,41 @@ public class Calc {
         return numberResult;
     }
 
+    /**
+     * Multiplies two numbers to each other (Karatsuba)
+     * @Param n1    The first number
+     * @Param n2    The second number
+     * @Pre {@code n1 != null && n2 != null}
+     * @Throws NullPointerException if {@code n1 == null || n2 == null}
+     * @Return Number numberResult where {@code numberResult = n1*n2}
+     *
+     */
     public Number karatsuba(Number n1, Number n2) {
+        int base = n1.base;
+        int m = n1.getLength();
+        int n = n2.getLength();
+
+        //Split numbers if one is larger than 2
+        int lengthOfSplit;
+        if(m>=n){
+            lengthOfSplit = m/2+m%2; //Is modulo allowed?
+        } else {
+            lengthOfSplit = n2.getLength()/2+n2.getLength()%2; //Is modulo allowed?
+        }
+        //Split numbers in half
+        Number n1_lo = new Number("", base, n1.getNegative(), lengthOfSplit); //Does not work for odd length numbers
+        Number n1_hi = new Number("", base, n1.getNegative(), lengthOfSplit); //Does not work for odd length numbers
+        Number n2_lo = new Number("", base, n2.getNegative(), lengthOfSplit); //Does not work for odd length numbers
+        Number n2_hi = new Number("", base, n2.getNegative(), lengthOfSplit); //Does not work for odd length numbers
+
+        Number newLo = karatsuba(n1_lo,n2_lo);
+        Number newHi = karatsuba(n1_hi,n2_hi);
+        Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
+        Number result = new Number("", base, n1.getNegative() ^ n2.getNegative(), k);
+
         return null; // @TODO Implement
     }
 
     // @TODO Implement other functions.
 }
+
