@@ -16,7 +16,7 @@ public class Main {
                 case "[add]":
                     // TODO: set c to result of add(IO.x, IO.y)
                     break;
-                case "[subtract]":
+                case "[subtractUnsigned]":
                     // TODO: set c to result of sub(IO.x, IO.y)
                     break;
                 case "[multiply]":

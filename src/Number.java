@@ -2,9 +2,9 @@
  * Represents large signed integer numbers.
  */
 public class Number implements Comparable<Number> {
-    int base;
-    boolean negative;
-    int[] num;
+    private int base;
+    private boolean negative;
+    private int[] num;
 
     /**
      * Creates a new {@code Number} object.
@@ -55,6 +55,14 @@ public class Number implements Comparable<Number> {
     }
 
     /**
+     * Getter for the base of this number.
+     * @return The base of this number.
+     */
+    public int getBase() {
+        return base;
+    }
+
+    /**
      * Gives access to one of the digits of the number.
      * @param index The index of the number to be retrieved. {@code 0} indicates the least important digit, {@code getLength()} the
      *              most important digit.
@@ -62,6 +70,14 @@ public class Number implements Comparable<Number> {
      */
     public int getDigit(int index) {
         return num[index];
+    }
+
+    /**
+     * Generates an inversed sign version of the current object.
+     * @return Duplicate of the current object, but with changed sign.
+     */
+    public Number getSwitchedSign() {
+        return new Number(num, base, !getNegative());
     }
 
     @Override

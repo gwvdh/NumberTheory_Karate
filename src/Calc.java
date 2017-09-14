@@ -1,27 +1,49 @@
 public class Calc {
 
+    public Number add(Number n1, Number n2) {
+        if (n1.getNegative() == n2.getNegative()) {
+            return addUnsigned(n1, n2);
+        } else if (n1.getNegative()) {
+            return subtractUnsigned(n2 ,n1.getSwitchedSign());
+        } else { // n2.getNegative()
+            return subtractUnsigned(n1, n2.getSwitchedSign());
+        }
+    }
+
     /**
      * Adds two numbers to each other according to algorithm 1.1 of the lecture notes
      * @Param n1    The first number
      * @Param n2    The second number
      * @Pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative())}    // Only add two of the same negative sign
      * @Throws NullPointerException if {@code n1 == null || n2 == null}
-     * @Return Number numberResult where {@code numberResult = n1+n2}
+     * @Return Number numberResult where {@code numberResult = n1+n2} without leading zeros.
      *
      */
-    public Number add(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
+    private Number addUnsigned(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
         if(n1==null || n2==null){   // Preconditions
             throw new NullPointerException("Can not add to null");
-        } else if(n1.getNegative()^n2.getNegative()){
+        } else if(n1.getNegative() != n2.getNegative()){
             throw new IllegalArgumentException("Different sign");
         }
-        //@TODO Handle numbers of different lengths (add leading zeroes to the smaller number)
-        int base = n1.base;
-        int length = Math.max(n1.getLength(), n2.getLength());
-        int[] result = new int[length];
-        int carry=0;
-        for(int i=0; i>=length; i++){
-            int res = n1.getDigit(i)+n2.getDigit(i)+carry; //No check if a next carry is necessary
+
+        int base = n1.getBase();
+        int length = Math.max(n1.getLength(), n2.getLength()); // The maximum length of the two numbers.
+        int[] result = new int[length + 1]; // Array to write the result to, has one extra digit to prevent overflow.
+
+        int carry = 0; // Keeps track of the carry.
+        for(int i = 0; i < length; i++){
+            int res = carry;
+
+            // Add the value of each digit, if it exists
+            if (i < n1.getLength()) {
+                res += n1.getDigit(i);
+            }
+            if (i < n2.getLength()) {
+                res += n2.getDigit(i);
+            }
+
+            // res = n1.getDigit(i) + n2.getDigit(i) + carry
+
             if(res >= base){
                 res = res - base;
                 carry = 1;
@@ -30,45 +52,48 @@ public class Calc {
             }
             result[i] = res;
         }
-        int k; //Length of the result Number
-        if(carry == 1){
-            k = length+1;
-            result[k-1] = 1;
-        } else {
-            k = length;
+
+        // Remove leading zeros, first detect the most significant digit which isn't zero.
+        int i;
+        for (i = result.length - 1; i > 0; i--) {
+            if (result[i] != 0) {
+                break;
+            }
         }
-        Number numberResult = new Number(new int[k], base, n1.getNegative()/* ^ n2.getNegative()*/); //@TODO Does not handle the negative correctly
-        for(int i=1; i<k-1; i++){
-            numberResult.num[i-1] = result[k-i];
-        }
-        return numberResult;
+
+        // Copy all non-leading zero digits.
+        int[] endResult = new int[i + 1];
+        System.arraycopy(result, 0, endResult, 0, endResult.length);
+
+        // Create a new number object with the results and return this.
+        return new Number(endResult, base, n1.getNegative());
     }
 
     /**
      * Subtracts two numbers from each other according to algorithm 1.2 of the lecture notes
-     * @Param n1    The first number
-     * @Param n2    The second number
-     * @Pre {@code n1 != null && n2 != null && !(n1 ^ n2) && n1>n2}    // Only subtract two of the same negative sign
-     * @Throws NullPointerException if {@code n1 == null || n2 == null}
-     * @Return Number numberResult where {@code numberResult = n1-n2}
+     * @param n1    The first number
+     * @param n2    The second number
+     * @pre {@code n1 != null && n2 != null && !(n1.get ^ n2) && n1>=n2}    // Only subtractUnsigned two of the same negative sign
+     * @throws NullPointerException if {@code n1 == null || n2 == null}
+     * @return Number numberResult where {@code numberResult = n1-n2}
      *
      */
-    public Number subtract(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
+    public Number subtractUnsigned(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
         if(n1==null || n2==null){
-            throw new NullPointerException("Can not add to null");
+            throw new NullPointerException("Numbers may not be null");
         } else if(n1.getNegative()^n2.getNegative()){
-            throw new IllegalArgumentException("Different sign");
-        } else if(n1.getLength()<n2.getLength()){ //@TODO Not entirely robust
-            throw new IllegalArgumentException("x<y");
+            throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
+        } else if(n1.compareTo(n2) < 0){
+            throw new IllegalArgumentException("The first number of subtractUnsigned should be larger than the second.");
         }
 
-        int base = n1.base;
+        int base = n1.getBase();
         int carry = 0;
         int length = n1.getLength();
         int[] result = new int[length];
-        //@TODO Add leading zeroes to the smaller number (n2)
+        //@TODO Add leading zeroes to the smaller number (n2). AK: Better to check if the index is within range instead of adding zeros.
         for(int i=0; i<length; i++){
-            result[i] = n1.num[i]-n2.num[i]-carry; //@TODO Wrong numbers are being subtracted
+            result[i] = n1.getDigit(i) - n2.getDigit(i) - carry; //@TODO Wrong numbers are being subtracted
             if(result[i]<0){
                 result[i]=result[i]+base;
                 carry = 1;
@@ -76,24 +101,30 @@ public class Calc {
                 carry = 0;
             }
         }
-        int k = n1.getLength();
-        while(k>=2 && result[k-1]==0){
-            k = k-1;
+
+        // Remove leading zeros, first detect the most significant digit which isn't zero.
+        int i;
+        for (i = result.length - 1; i > 0; i--) {
+            if (result[i] != 0) {
+                break;
+            }
         }
-        Number numberResult = new Number(new int[k], base, n1.getNegative()/* ^ n2.getNegative()*/); //@TODO Does not handle the negative correctly
-        for(int i=1; i<k-1; i++){
-            numberResult.num[i-1] = result[k-i];
-        }
-        return numberResult;
+
+        // Copy all non-leading zero digits.
+        int[] endResult = new int[i + 1];
+        System.arraycopy(result, 0, endResult, 0, endResult.length);
+
+        // Create a new number object with the results and return this.
+        return new Number(endResult, base, n1.getNegative());
     }
 
     /**
      * Multiplies two numbers to each other according to algorithm 1.3 of the lecture notes (Naive multiplication)
-     * @Param n1    The first number
-     * @Param n2    The second number
-     * @Pre {@code n1 != null && n2 != null}
-     * @Throws NullPointerException if {@code n1 == null || n2 == null}
-     * @Return Number numberResult where {@code numberResult = n1*n2}
+     * @param n1    The first number
+     * @param n2    The second number
+     * @pre {@code n1 != null && n2 != null}
+     * @throws NullPointerException if {@code n1 == null || n2 == null}
+     * @return Number numberResult where {@code numberResult = n1*n2}
      *
      */
     public Number multiply(Number n1, Number n2) throws NullPointerException{
@@ -107,40 +138,44 @@ public class Calc {
         for(int i : result){ //Set all elements in the result array to 0
             result[i] = 0;
         }
-        int base = n1.base;
+        int base = n1.getBase();
         int carry = 0;
         for(int i=0; i<m; i++){ //Get elements from one number, multiply with numbers from the other
             for(int j=0; j<n; j++){
-                int t = result[i+j]+n1.num[i]*n2.num[j]+carry;
+                int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry;
                 carry = t/base;
                 result[i+j] = t-carry*base;
             }
             result[i+n] = carry;
         }
-        int k;
-        if(result[m+n-1] == 0){
-            k = m+n-2;
-        } else {
-            k = m+n-1;
+
+        // Remove leading zeros, first detect the most significant digit which isn't zero.
+        int i;
+        for (i = result.length - 1; i > 0; i--) {
+            if (result[i] != 0) {
+                break;
+            }
         }
-        Number numberResult = new Number(new int[k], base, n1.getNegative() ^ n2.getNegative());
-        for(int i=1; i<k-1; i++){
-            numberResult.num[i-1] = result[k-i];
-        }
-        return numberResult;
+
+        // Copy all non-leading zero digits.
+        int[] endResult = new int[i + 1];
+        System.arraycopy(result, 0, endResult, 0, endResult.length);
+
+        // Create a new number object with the results and return this.
+        return new Number(endResult, base, n1.getNegative() == n2.getNegative());
     }
 
     /**
      * Multiplies two numbers to each other (Karatsuba)
-     * @Param n1    The first number
-     * @Param n2    The second number
-     * @Pre {@code n1 != null && n2 != null}
-     * @Throws NullPointerException if {@code n1 == null || n2 == null}
-     * @Return Number numberResult where {@code numberResult = n1*n2}
+     * @param n1    The first number
+     * @param n2    The second number
+     * @pre {@code n1 != null && n2 != null}
+     * @throws NullPointerException if {@code n1 == null || n2 == null}
+     * @return Number numberResult where {@code numberResult = n1*n2}
      *
      */
     public Number karatsuba(Number n1, Number n2) {
-        int base = n1.base;
+        int base = n1.getBase();
         int m = n1.getLength();
         int n = n2.getLength();
 
@@ -159,7 +194,7 @@ public class Calc {
 
         Number newLo = karatsuba(n1_lo,n2_lo);
         Number newHi = karatsuba(n1_hi,n2_hi);
-        Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
+        Number newMid = subtractUnsigned(subtractUnsigned(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
         Number result = new Number(new int[n], base, n1.getNegative() ^ n2.getNegative()); //change length
 
         return null; // @TODO Implement

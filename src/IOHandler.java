@@ -49,7 +49,7 @@ public class IOHandler {
                     System.out.println(base);
                     break;
                 case "[add]":
-                case "[subtract]":
+                case "[subtractUnsigned]":
                 case "[multiply]":
                 case "[karatsuba]":
                     operation = s;
@@ -134,7 +134,7 @@ public class IOHandler {
     }
 
     String getString(Number a, int index) {
-        return Integer.toString(a.getDigit(index), a.base);
+        return Integer.toString(a.getDigit(index), a.getBase());
     }
 
     /**
