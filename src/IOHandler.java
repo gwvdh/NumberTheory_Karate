@@ -14,7 +14,7 @@ public class IOHandler {
     public Number y;
     int base;
 
-    File file;
+    final File file;
     Scanner sc;
 
 

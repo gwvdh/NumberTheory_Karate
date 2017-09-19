@@ -5,15 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CalcTest {
     Calc c;
-    Number p0 = new Number(new int[] {0}, 5, false);
-    Number p1 = new Number(new int[] {1}, 5, false);
-    Number p04 = new Number(new int[] {0,4}, 5, false);
-    Number p0512494 = new Number(new int[] {0,5,1,2,4,9,4}, 5, false);
+    final Number p0 = new Number(new int[] {0}, 5, false);
+    final Number p1 = new Number(new int[] {1}, 5, false);
+    final Number p04 = new Number(new int[] {0,4}, 5, false);
+    final Number p0512494 = new Number(new int[] {0,5,1,2,4,9,4}, 5, false);
 
-    Number n0 = new Number(new int[] {0}, 5, true);
-    Number n1 = new Number(new int[] {1}, 5, true);
-    Number n04 = new Number(new int[] {0,4}, 5, true);
-    Number n0512494 = new Number(new int[] {0,5,1,2,4,9,4}, 5, true);
+    final Number n0 = new Number(new int[] {0}, 5, true);
+    final Number n1 = new Number(new int[] {1}, 5, true);
+    final Number n04 = new Number(new int[] {0,4}, 5, true);
+    final Number n0512494 = new Number(new int[] {0,5,1,2,4,9,4}, 5, true);
 
     @BeforeEach
     void setUp() {
