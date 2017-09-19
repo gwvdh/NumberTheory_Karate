@@ -8,6 +8,7 @@ public class Main {
 
     void run() {
 
+        int count = 1;
         while(IO.HasNext) {
             Number c = null;
             IO.readNext();
@@ -27,10 +28,13 @@ public class Main {
                     break;
                 default:
                     break;
-            }
-            IO.print(c);
-        }
 
+            }
+
+            IO.print(IO.x, count);
+            count++;
+        }
+        IO.close();
     }
 
     public static void main(String [] args) {

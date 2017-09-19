@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -12,25 +14,36 @@ public class IOHandler {
     public String operation;
     public Number x;
     public Number y;
-    int base;
 
-    File file;
-    Scanner sc;
+    private int base;
+    private File file;
+    private File output;
+    private FileOutputStream out;
+    private Scanner sc;
 
 
     public IOHandler() {
 
         HasNext = true;
-        //TODO: rename to "input.txt"
-        file = new File("example.txt");
-
         try {
+            file = new File("example.txt");
+            output = new File("output.txt");
+
+            //check existence, overwrite if it does exist
+            if(!output.exists()) {
+                output.createNewFile();
+            }
+            out =  new FileOutputStream(output);
+
+
             sc = new Scanner(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-    }
+        }
     /**
      * Reads the next input block from the input file
      */
@@ -59,6 +72,7 @@ public class IOHandler {
                     break;
                 case "[y]":
                     y = initNumber(y);
+                    gotNumbers = true;
                     break;
                 case "[answer]":
                     System.out.println("comparing answers");
@@ -73,14 +87,7 @@ public class IOHandler {
         HasNext = sc.hasNext();
 
     }
-    /** <p> determine word size, store word size in variable
-     *  read words individually
-     *  get the base 10 representation
-     *  add number to array
-     *  create new Number with that word size and the array
-     *  </p>
-     *
-     */
+
     Number initNumber (Number a) {
 
         boolean negative;
@@ -88,31 +95,31 @@ public class IOHandler {
         char charWord;
 
         //check whether the word is negative
-        int i = 0;
-        int correction = 0;
 
+        int end = 0;
         String num = sc.next();
 
-        if(num.charAt(i) == '-') {
-
-            numArray = new int[num.length() - 1];
+        if (num.charAt(0) == '-') {
+            //negative
             negative = true;
-            correction = 1;
-            i++;
+            numArray = new int[num.length() - 1];
+            end = 1;
 
         } else {
-
-            numArray = new int[num.length()];
+            //not negative
             negative = false;
-
+            numArray = new int[num.length()];
         }
-
+        //account for minus sign
+        int i = numArray.length - 1 + end;
+        int c = 0;
         //fill the digits in the array
-        for(; i < numArray.length; i++) {
+        for(; i >= end; i--) {
 
             charWord = num.charAt(i);
             String word = Character.toString(charWord);
-            numArray[i - correction] = determineNumber(word);
+            numArray[c] = determineNumber(word);
+            c++;
         }
 
 
@@ -133,11 +140,38 @@ public class IOHandler {
     }
 
     /**
-     * prints a in normal Number representation in System.out
+     * prints a in normal Number representation in the output file
      * @param a Number
-     *
+     * @param count the number representing which calculation was performed
      */
-    public void print(Number a) {
-        System.out.println("[answer] " + a.toString());
+    public void print(Number a, int count) {
+        StringBuilder outString = new StringBuilder();
+
+        //create the string
+        outString.append("[answer ");
+        outString.append(count);
+        outString.append("] ");
+        outString.append(a.toString());
+        outString.append("\r\n");
+
+        //try to write
+        try {
+            out.write(outString.toString().getBytes());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
+    //flush and close the output stream
+    public void close () {
+        try {
+            if(out != null) {
+                out.flush();
+                out.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
