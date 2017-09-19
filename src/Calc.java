@@ -182,22 +182,58 @@ public class Calc {
         //Split numbers if one is larger than 2
         int lengthOfSplit;
         if(m>=n){
-            lengthOfSplit = m/2+m%2; //Is modulo allowed?
+            lengthOfSplit = m/2;
         } else {
-            lengthOfSplit = n2.getLength()/2+n2.getLength()%2; //Is modulo allowed?
+            lengthOfSplit = n/2;
+        }
+        //Base
+        if(lengthOfSplit <= 0){
+            return multiply(n1,n2);
         }
         //Split numbers in half
-        Number n1_lo = new Number(new int[lengthOfSplit], base, n1.getNegative()); //Does not work for odd length numbers
-        Number n1_hi = new Number(new int[lengthOfSplit], base, n1.getNegative()); //Does not work for odd length numbers
-        Number n2_lo = new Number(new int[lengthOfSplit], base, n2.getNegative()); //Does not work for odd length numbers
-        Number n2_hi = new Number(new int[lengthOfSplit], base, n2.getNegative()); //Does not work for odd length numbers
+        int[] num_n1_lo = new int[lengthOfSplit];
+        int[] num_n1_hi = new int[lengthOfSplit];
+        int[] num_n2_lo = new int[lengthOfSplit];
+        int[] num_n2_hi = new int[lengthOfSplit];
+        //n1 split
+        for(int i=0; i<lengthOfSplit*2; i++) {
+            if(i<lengthOfSplit) {
+                num_n1_lo[i] = n1.getDigit(i);
+            } else {
+                num_n1_hi[i%lengthOfSplit] = n1.getDigit(i);
+            }
+        }
+        //n2 split
+        for(int i=0; i<lengthOfSplit*2; i++) {
+            if(i<lengthOfSplit) {
+                num_n2_lo[i] = n2.getDigit(i);
+            } else {
+                num_n2_hi[i%lengthOfSplit] = n2.getDigit(i);
+            }
+        }
+        Number n1_lo = new Number(num_n1_lo, base, n1.getNegative());
+        Number n1_hi = new Number(num_n1_hi, base, n1.getNegative());
+        Number n2_lo = new Number(num_n2_lo, base, n2.getNegative());
+        Number n2_hi = new Number(num_n2_hi, base, n2.getNegative());
+
 
         Number newLo = karatsuba(n1_lo,n2_lo);
         Number newHi = karatsuba(n1_hi,n2_hi);
         Number newMid = subtractUnsigned(subtractUnsigned(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
-        Number result = new Number(new int[n], base, n1.getNegative() ^ n2.getNegative()); //change length
+        int[] result = new int[newHi.getLength()+2*lengthOfSplit]; //Is this the correct length?? (newHi+2*lengthOfSplit)
+        //Number result = new Number(new int[n], base, n1.getNegative() ^ n2.getNegative()); //change length
 
-        return null; // @TODO Implement
+        for(int i=0; i<result.length; i++){
+            if(i<newLo.getLength() && i>=lengthOfSplit*0){
+                result[i] += newLo.getDigit(i);
+            } else if(i<newMid.getLength() && i>=lengthOfSplit*1){
+                result[i] += newMid.getDigit(i);
+            } else if(i<newHi.getLength() && i>=lengthOfSplit*2){
+                result[i] += newHi.getDigit(i);
+            }
+        }
+        Number finalResult = new Number(result, base, n1.getNegative() ^ n2.getNegative());
+        return finalResult;
     }
 
     // @TODO Implement other functions.
