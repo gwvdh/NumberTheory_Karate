@@ -86,6 +86,7 @@ class NumberTest {
         compareTest(p0512494, p04, 1);
         compareTest(n0512494, n04, -1);
         compareTest(n0512494, p04, -1);
+        compareTest(n04, n0512494, 1);
     }
 
     void compareTest(Number n1, Number n2, int expected) {

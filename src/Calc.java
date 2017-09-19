@@ -3,10 +3,26 @@ public class Calc {
     public Number add(Number n1, Number n2) {
         if (n1.getNegative() == n2.getNegative()) {
             return addUnsigned(n1, n2);
-        } else if (n1.getNegative()) {
-            return subtractUnsignedExtended(n2 ,n1.getSwitchedSign());
-        } else { // n2.getNegative()
+        } else if (n1.getNegative()) { // && !n2.getNegative()
+            return subtractUnsignedExtended(n2, n1.getSwitchedSign());
+        } else { // n2.getNegative() && !n1.getNegative()
             return subtractUnsignedExtended(n1, n2.getSwitchedSign());
+        }
+    }
+
+    public Number subtract(Number n1, Number n2) {
+        if (n1.getNegative() == n2.getNegative()) {
+            return subtractUnsignedExtended(n1, n2);
+        } else if (n1.getNegative()) { // && !n2.getNegative()
+            // n1 - n2 == -((-n1) + n2)
+            // Since n1 is negative will -n1 be positive. In addition to the fact that n1 is positive can
+            // unsigned addition be applied.
+            return addUnsigned(n1.getSwitchedSign(), n2).getSwitchedSign();
+        } else { // n2.getNegative() && !n1.getNegative()
+            // n1 - n2 == n1 + (-n2)
+            // Since n2 is negative will -n2 be positive. In addition to the fact that n1 is positive can
+            // unsigned addition be applied.
+            return addUnsigned(n1, n2.getSwitchedSign());
         }
     }
 
@@ -83,9 +99,10 @@ public class Calc {
             throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
         }
 
-        // Check if n2 is larger than n1, since subtractUnsigned does not support this the operation n1 - n2 is
+        // @TODO CORRECT
+        // Check if abs(n2) > abs(n1), since subtractUnsigned does not support this the operation n1 - n2 is
         // rewritten to the equivalent operation -(n2 - n1) which will satisfy the pre condition of subtractUnsigned.
-        if (n1.compareTo(n2) > 0) {
+        if (n1.getNegative() == n1.compareTo(n2) <= 0) {
             return subtractUnsigned(n1, n2);
         } else {
             Number invertedResult = subtractUnsigned(n2, n1); // Compute n2 - n1
@@ -98,7 +115,7 @@ public class Calc {
      * Subtracts two numbers from each other according to algorithm 1.2 of the lecture notes
      * @param n1    The first number
      * @param n2    The second number
-     * @pre {@code n1 != null && n2 != null && !(n1.get ^ n2) && n1>=n2}    // Only subtractUnsigned two of the same negative sign
+     * @pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative()) && abs(n1)>=abs(n2)}
      * @throws NullPointerException if {@code n1 == null || n2 == null}
      * @return Number numberResult where {@code numberResult = n1-n2}
      *
@@ -108,8 +125,8 @@ public class Calc {
             throw new NullPointerException("Numbers may not be null");
         } else if (n1.getNegative()^n2.getNegative()) {
             throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
-        } else if (n1.compareTo(n2) < 0) {
-            throw new IllegalArgumentException("The first number of subtractUnsigned should be larger than the second.");
+        } else if (n1.getNegative() == n1.compareTo(n2) > 0 && n1.compareTo(n2) != 0) { // n1.getNegative() <=> n1 > n2
+            throw new IllegalArgumentException("The absolute values of the first number of subtractUnsigned should be larger than the second.");
         }
 
         int base = n1.getBase();
