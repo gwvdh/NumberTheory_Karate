@@ -99,9 +99,8 @@ public class Calc {
             throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
         }
 
-        // @TODO CORRECT
-        // Check if abs(n2) > abs(n1), since subtractUnsigned does not support this the operation n1 - n2 is
-        // rewritten to the equivalent operation -(n2 - n1) which will satisfy the pre condition of subtractUnsigned.
+        // Check if abs(n2) > abs(n1), since this is a prerequisite of subtractUnsigned, hence in such case is n1 - n2
+        // rewritten to its equivalent operation -(n2 - n1).
         if (n1.getNegative() == n1.compareTo(n2) <= 0) {
             return subtractUnsigned(n1, n2);
         } else {
