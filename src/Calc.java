@@ -79,7 +79,7 @@ public class Calc {
         int length = Math.max(n1.getLength(), n2.getLength()); // The maximum length of the two numbers.
         int[] result = new int[length + 1]; // Array to write the result to, has one extra digit to prevent overflow.
         int carry = 0; // Keeps track of the carry.
-        for(int i = 0; i < length; i++){
+        for(int i = 0; i < result.length; i++){
             int res = carry;
 
             // Add the value of each digit, if it exists
@@ -317,17 +317,35 @@ public class Calc {
 
         Number newLo = karatsuba(n1_lo,n2_lo);
         Number newHi = karatsuba(n1_hi,n2_hi);
-        Number newMid = subtractUnsigned(subtractUnsigned(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
-        int[] result = new int[newHi.getLength()+2*lengthOfSplit]; //Is this the correct length?? (newHi+2*lengthOfSplit)
+        Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
+        int[] result = new int[n1.getLength()+n2.getLength()];
+
         //Number result = new Number(new int[n], base, n1.getNegative() ^ n2.getNegative()); //change length
 
         for(int i=0; i<result.length; i++){
             if(i<newLo.getLength() && i>=lengthOfSplit*0){
-                result[i] += newLo.getDigit(i);
-            } else if(i<newMid.getLength() && i>=lengthOfSplit*1){
-                result[i] += newMid.getDigit(i);
-            } else if(i<newHi.getLength() && i>=lengthOfSplit*2){
-                result[i] += newHi.getDigit(i);
+                int t = result[i] + newLo.getDigit(i);
+                int carry = t/newLo.getBase();
+                result[i] = t%newLo.getBase();
+                if(i+1<result.length) {
+                    result[i + 1] += carry;
+                }
+            }
+            if(i-lengthOfSplit*1<newMid.getLength() && i>=lengthOfSplit*1){
+                int t = result[i] + newMid.getDigit(i-lengthOfSplit*1);
+                int carry = t/newMid.getBase();
+                result[i] = t%newMid.getBase();
+                if(i+1<result.length) {
+                    result[i + 1] += carry;
+                }
+            }
+            if(i-lengthOfSplit*2<newHi.getLength() && i>=lengthOfSplit*2){
+                int t = result[i] + newHi.getDigit(i-lengthOfSplit*2);
+                int carry = t/newHi.getBase();
+                result[i] = t%newHi.getBase();
+                if(i+1<result.length) {
+                    result[i + 1] += carry;
+                }
             }
         }
         Number finalResult = new Number(result, base, n1.getNegative() ^ n2.getNegative());

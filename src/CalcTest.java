@@ -77,6 +77,24 @@ class CalcTest {
         assertEquals(result.compareTo(expected), 0);
     }
 
+    @Test
+    void karatsuba() {
+        Number p4444 = new Number(new int[] {4,4,4,4}, 10, false);
+        Number p3 = new Number(new int[] {3}, 10, false);
+
+        Number n4444 = new Number(new int[] {4,4,4,4}, 10, true);
+
+        // Multiply positive numbers
+        karatsubaTest(p0, n0, n0);
+        karatsubaTest(p1, n1, n1);
+        karatsubaTest(p1, n04, new Number(new int[] {0,4}, 5, true));
+        karatsubaTest(p04, p1, new Number(new int[] {0,4}, 5, false));
+
+        // Multiply maximum numbers
+        karatsubaTest(n4444, p4444, new Number(new int[] {6,3,1,9,4,7,9,1}, 10, true));
+        karatsubaTest(n4444, n4444, new Number(new int[] {6,3,1,9,4,7,9,1}, 10, false));//1,0,0,0,3,4,4,4}, 5, false));
+        karatsubaTest(p3, p3, new Number(new int[] {9}, 10, false));
+    }
     void karatsubaTest(Number n1, Number n2, Number expected) {
         Number result = c.karatsuba(n1, n2);
 

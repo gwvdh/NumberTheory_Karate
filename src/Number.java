@@ -69,7 +69,12 @@ public class Number implements Comparable<Number> {
      * @return The digit present at the digit indicated by {@code index}.
      */
     public int getDigit(int index) {
-        return num[index];
+        if(index < num.length){
+            return num[index];
+        } else{
+            return 0;
+        }
+
     }
 
     /**
