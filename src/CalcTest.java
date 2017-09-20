@@ -79,10 +79,11 @@ class CalcTest {
 
     @Test
     void karatsuba() {
-        Number p4444 = new Number(new int[] {4,4,4,4}, 10, false);
+        Number p4444 = new Number(new int[] {4,4,4,4}, 5, false);
         Number p3 = new Number(new int[] {3}, 10, false);
+        Number p341 = new Number(new int[] {3,4,1}, 5, false);
 
-        Number n4444 = new Number(new int[] {4,4,4,4}, 10, true);
+        Number n4444 = new Number(new int[] {4,4,4,4}, 5, true);
 
         // Multiply positive numbers
         karatsubaTest(p0, n0, n0);
@@ -91,8 +92,9 @@ class CalcTest {
         karatsubaTest(p04, p1, new Number(new int[] {0,4}, 5, false));
 
         // Multiply maximum numbers
-        karatsubaTest(n4444, p4444, new Number(new int[] {6,3,1,9,4,7,9,1}, 10, true));
-        karatsubaTest(n4444, n4444, new Number(new int[] {6,3,1,9,4,7,9,1}, 10, false));//1,0,0,0,3,4,4,4}, 5, false));
+        karatsubaTest(p341,p341,new Number(new int[] {4,0,2,3,3}, 5, false));//143*143=33204
+        karatsubaTest(n4444, p4444, new Number(new int[] {1,0,0,0,3,4,4,4}, 5, true));
+        karatsubaTest(n4444, n4444, new Number(new int[] {1,0,0,0,3,4,4,4}, 5, false));
         karatsubaTest(p3, p3, new Number(new int[] {9}, 10, false));
     }
     void karatsubaTest(Number n1, Number n2, Number expected) {

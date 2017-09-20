@@ -278,17 +278,19 @@ public class Calc {
         int m = n1.getLength();
         int n = n2.getLength();
 
+        //Base
+        if(m<2 && n<2){
+            return multiply(n1,n2);
+        }
+
         //Split numbers if one is larger than 2
         int lengthOfSplit;
         if(m>=n){
-            lengthOfSplit = m/2;
+            lengthOfSplit = m/2+m%2;
         } else {
-            lengthOfSplit = n/2;
+            lengthOfSplit = n/2+n%2;
         }
-        //Base
-        if(lengthOfSplit <= 0){
-            return multiply(n1,n2);
-        }
+
         //Split numbers in half
         int[] num_n1_lo = new int[lengthOfSplit];
         int[] num_n1_hi = new int[lengthOfSplit];
@@ -310,17 +312,16 @@ public class Calc {
                 num_n2_hi[i%lengthOfSplit] = n2.getDigit(i);
             }
         }
-        Number n1_lo = new Number(num_n1_lo, base, n1.getNegative());
-        Number n1_hi = new Number(num_n1_hi, base, n1.getNegative());
-        Number n2_lo = new Number(num_n2_lo, base, n2.getNegative());
-        Number n2_hi = new Number(num_n2_hi, base, n2.getNegative());
+        Number n1_lo = new Number(num_n1_lo, base, false);
+        Number n1_hi = new Number(num_n1_hi, base, false);
+        Number n2_lo = new Number(num_n2_lo, base, false);
+        Number n2_hi = new Number(num_n2_hi, base, false);
 
         Number newLo = karatsuba(n1_lo,n2_lo);
         Number newHi = karatsuba(n1_hi,n2_hi);
         Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
-        int[] result = new int[n1.getLength()+n2.getLength()];
 
-        //Number result = new Number(new int[n], base, n1.getNegative() ^ n2.getNegative()); //change length
+        int[] result = new int[n1.getLength()+n2.getLength()];
 
         for(int i=0; i<result.length; i++){
             if(i<newLo.getLength() && i>=lengthOfSplit*0){
@@ -348,7 +349,18 @@ public class Calc {
                 }
             }
         }
-        Number finalResult = new Number(result, base, n1.getNegative() ^ n2.getNegative());
+        // Remove leading zeros, first detect the most significant digit which isn't zero.
+        int i;
+        for (i = result.length - 1; i > 0; i--) {
+            if (result[i] != 0) {
+                break;
+            }
+        }
+        // Copy all non-leading zero digits.
+        int[] endResult = new int[i + 1];
+        System.arraycopy(result, 0, endResult, 0, endResult.length);
+        Number finalResult = new Number(endResult, base, n1.getNegative() ^ n2.getNegative());
+
         return finalResult;
     }
 
