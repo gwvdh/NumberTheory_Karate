@@ -4,7 +4,7 @@
 public class Main {
 
     Calc op = new Calc();
-    IOHandler IO = new IOHandler();
+    final IOHandler IO = new IOHandler();
 
     void run() {
 

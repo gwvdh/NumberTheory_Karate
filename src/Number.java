@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Represents large signed integer numbers.
  */
@@ -138,15 +136,6 @@ public class Number implements Comparable<Number> {
             if (num[i] < 10) {
                 output.append(num[i]);
             } else {
-//                char output;
-//                switch (num[i]) {
-//                    case 10:
-//                        output = 'a';
-//                    break;
-//                    case 11:
-//                        output = 'b';
-//                    break;
-//                }
                 output.append(Integer.toString(num[i], getBase()));
             }
         }

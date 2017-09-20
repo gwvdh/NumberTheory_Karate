@@ -1,12 +1,58 @@
 public class Calc {
 
+    /**
+     * Adds the value of two number objects.
+     * @param n1    The first number
+     * @param n2    The second number
+     * @pre     {@code n1 != null && n2 != null && n1.base == n2.base}
+     * @return Number numberResult where {@code numberResult = n1 + n2} without leading zeros.
+     */
     public Number add(Number n1, Number n2) {
+        // Assert preconditions
+        if(n1==null || n2==null){
+            throw new NullPointerException("Can not add to null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
+        }
+
+        // Delegate the addition of signed numbers to implementations on unsigned numbers.
         if (n1.getNegative() == n2.getNegative()) {
             return addUnsigned(n1, n2);
-        } else if (n1.getNegative()) {
-            return subtractUnsignedExtended(n2 ,n1.getSwitchedSign());
-        } else { // n2.getNegative()
+        } else if (n1.getNegative()) { // && !n2.getNegative()
+            return subtractUnsignedExtended(n2, n1.getSwitchedSign());
+        } else { // n2.getNegative() && !n1.getNegative()
             return subtractUnsignedExtended(n1, n2.getSwitchedSign());
+        }
+    }
+
+    /**
+     * Subtracts the value of two number objects.
+     * @param n1    The first number
+     * @param n2    The second number
+     * @pre     {@code n1 != null && n2 != null && n1.base == n2.base}
+     * @return Number numberResult where {@code numberResult = n1 - n2} without leading zeros.
+     */
+    public Number subtract(Number n1, Number n2) {
+        // Assert preconditions
+        if(n1==null || n2==null){
+            throw new NullPointerException("Can not add to null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
+        }
+
+        // Delegate the addition of signed numbers to implementations on unsigned numbers.
+        if (n1.getNegative() == n2.getNegative()) {
+            return subtractUnsignedExtended(n1, n2);
+        } else if (n1.getNegative()) { // && !n2.getNegative()
+            // n1 - n2 <=> -((-n1) + n2)
+            // Since n1 is negative will -n1 be positive. In addition to the fact that n1 is positive can
+            // unsigned addition be applied.
+            return addUnsigned(n1.getSwitchedSign(), n2).getSwitchedSign();
+        } else { // n2.getNegative() && !n1.getNegative()
+            // n1 - n2 <=> n1 + (-n2)
+            // Since n2 is negative will -n2 be positive. In addition to the fact that n1 is positive can
+            // unsigned addition be applied.
+            return addUnsigned(n1, n2.getSwitchedSign());
         }
     }
 
@@ -14,21 +60,24 @@ public class Calc {
      * Adds two numbers to each other according to algorithm 1.1 of the lecture notes
      * @param n1    The first number
      * @param n2    The second number
-     * @pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative())}    // Only add two of the same negative sign
+     * @pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative()) && n1.base == n2.base}    // Only add two of the same negative sign
      * @throws NullPointerException if {@code n1 == null || n2 == null}
-     * @return Number numberResult where {@code numberResult = n1+n2} without leading zeros.
+     * @return Number numberResult where {@code numberResult = n1+  n2} without leading zeros.
      */
     private Number addUnsigned(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
-        if(n1==null || n2==null){   // Preconditions
+        // Assert preconditions
+        if(n1==null || n2==null){
             throw new NullPointerException("Can not add to null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
         } else if(n1.getNegative() != n2.getNegative()){
             throw new IllegalArgumentException("Different sign");
         }
 
-        int base = n1.getBase();
+        // Loop through every index of both numbers and add their corresponding values.
+        int base = n1.getBase(); // The base of both numbers.
         int length = Math.max(n1.getLength(), n2.getLength()); // The maximum length of the two numbers.
         int[] result = new int[length + 1]; // Array to write the result to, has one extra digit to prevent overflow.
-
         int carry = 0; // Keeps track of the carry.
         for(int i = 0; i < length; i++){
             int res = carry;
@@ -73,19 +122,22 @@ public class Calc {
      * larger {@code n2} than {@code n1}.
      * @param n1    The first number
      * @param n2    The second number
+     * @pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative()) && n1.base == n2.base}
      * @throws NullPointerException if {@code n1 == null || n2 == null}
-     * @return Number numberResult where {@code numberResult = n1-n2}
+     * @return Number numberResult where {@code numberResult = n1 - n2}
      */
     private Number subtractUnsignedExtended(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
         if (n1 == null || n2 == null) {
             throw new NullPointerException("Numbers may not be null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
         } else if (n1.getNegative()^n2.getNegative()) {
             throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
         }
 
-        // Check if n2 is larger than n1, since subtractUnsigned does not support this the operation n1 - n2 is
-        // rewritten to the equivalent operation -(n2 - n1) which will satisfy the pre condition of subtractUnsigned.
-        if (n1.compareTo(n2) > 0) {
+        // Check if abs(n2) > abs(n1), since this is a prerequisite of subtractUnsigned, hence in such case is n1 - n2
+        // rewritten to its equivalent operation -(n2 - n1).
+        if (n1.getNegative() == n1.compareTo(n2) <= 0) {
             return subtractUnsigned(n1, n2);
         } else {
             Number invertedResult = subtractUnsigned(n2, n1); // Compute n2 - n1
@@ -98,24 +150,27 @@ public class Calc {
      * Subtracts two numbers from each other according to algorithm 1.2 of the lecture notes
      * @param n1    The first number
      * @param n2    The second number
-     * @pre {@code n1 != null && n2 != null && !(n1.get ^ n2) && n1>=n2}    // Only subtractUnsigned two of the same negative sign
+     * @pre {@code n1 != null && n2 != null && !(n1.getNegative() ^ n2.getNegative()) && abs(n1)>=abs(n2)
+     *      && n1.base == n2.base}
      * @throws NullPointerException if {@code n1 == null || n2 == null}
-     * @return Number numberResult where {@code numberResult = n1-n2}
-     *
+     * @return Number numberResult where {@code numberResult = n1 - n2}
      */
     private Number subtractUnsigned(Number n1, Number n2) throws NullPointerException, IllegalArgumentException {
         if (n1 == null || n2 == null) {
             throw new NullPointerException("Numbers may not be null");
-        } else if (n1.getNegative()^n2.getNegative()) {
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
+        } else if (n1.getNegative() ^ n2.getNegative()) {
             throw new IllegalArgumentException("Both numbers of subtractUnsigned should have the same sign.");
-        } else if (n1.compareTo(n2) < 0) {
-            throw new IllegalArgumentException("The first number of subtractUnsigned should be larger than the second.");
+        } else if (n1.getNegative() == n1.compareTo(n2) > 0 && n1.compareTo(n2) != 0) { // n1.getNegative() <=> n1 > n2
+            throw new IllegalArgumentException("The absolute values of the first number of subtractUnsigned should be larger than the second.");
         }
 
+        // Loop through every index of both numbers and subtract their corresponding values.
         int base = n1.getBase();
         int length = n1.getLength();
         int carry = 0;
-        int[] result = new int[length];
+        int[] result = new int[length]; // Contains the value of the subtracted digits.
         for (int i = 0; i < length; i++) {
             // Assume the digit of n2 to be zero if the current index exceeds n2s length.
             if (i < n2.getLength()) {
@@ -153,15 +208,18 @@ public class Calc {
      * Multiplies two numbers to each other according to algorithm 1.3 of the lecture notes (Naive multiplication)
      * @param n1    The first number
      * @param n2    The second number
-     * @pre {@code n1 != null && n2 != null}
+     * @pre {@code n1 != null && n2 != null && n1.base == n2.base}
      * @throws NullPointerException if {@code n1 == null || n2 == null}
-     * @return Number numberResult where {@code numberResult = n1*n2}
-     *
+     * @return Number numberResult where {@code numberResult = n1 * n2}
      */
     public Number multiply(Number n1, Number n2) throws NullPointerException{
-        if(n1==null || n2==null){   // Preconditions
+        // Assert preconditions
+        if (n1 == null || n2 == null){
             throw new NullPointerException("Can not add to null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
         }
+
         int m = n1.getLength();
         int n = n2.getLength();
 
@@ -204,12 +262,18 @@ public class Calc {
      * Multiplies two numbers to each other (Karatsuba)
      * @param n1    The first number
      * @param n2    The second number
-     * @pre {@code n1 != null && n2 != null}
+     * @pre {@code n1 != null && n2 != null && n1.base == n2.base}
      * @throws NullPointerException if {@code n1 == null || n2 == null}
      * @return Number numberResult where {@code numberResult = n1*n2}
      *
      */
-    public Number karatsuba(Number n1, Number n2) {
+    public Number karatsuba(Number n1, Number n2) throws NullPointerException {
+        if (n1 == null || n2 == null) {
+            throw new NullPointerException("Can not add to null");
+        } else if (n1.getBase() != n2.getBase()) {
+            throw new IllegalArgumentException("Both numbers should have the same base");
+        }
+
         int base = n1.getBase();
         int m = n1.getLength();
         int n = n2.getLength();
@@ -250,7 +314,6 @@ public class Calc {
         Number n1_hi = new Number(num_n1_hi, base, n1.getNegative());
         Number n2_lo = new Number(num_n2_lo, base, n2.getNegative());
         Number n2_hi = new Number(num_n2_hi, base, n2.getNegative());
-
 
         Number newLo = karatsuba(n1_lo,n2_lo);
         Number newHi = karatsuba(n1_hi,n2_hi);
