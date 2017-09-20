@@ -165,7 +165,7 @@ public class Calc {
         int m = n1.getLength();
         int n = n2.getLength();
 
-        int[] result = new int[n1.getLength()+n2.getLength()-1]; // In algorithm denoted as z
+        int[] result = new int[m+n]; // In algorithm denoted as z
         for(int i : result){ //Set all elements in the result array to 0
             result[i] = 0;
         }
@@ -176,8 +176,14 @@ public class Calc {
                 int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry;
                 carry = t/base;
                 result[i+j] = t-carry*base;
+                /*System.out.printf("n: ");
+                for(int k=0; k<result.length; k++){
+                    System.out.printf("%d",result[k]);
+                }
+                System.out.printf("\n");*/
             }
             result[i+n] = carry;
+            carry = 0;
         }
 
         // Remove leading zeros, first detect the most significant digit which isn't zero.
@@ -187,13 +193,11 @@ public class Calc {
                 break;
             }
         }
-
         // Copy all non-leading zero digits.
         int[] endResult = new int[i + 1];
         System.arraycopy(result, 0, endResult, 0, endResult.length);
-
         // Create a new number object with the results and return this.
-        return new Number(endResult, base, n1.getNegative() == n2.getNegative());
+        return new Number(endResult, base, n1.getNegative() ^ n2.getNegative());
     }
 
     /**

@@ -55,4 +55,38 @@ class CalcTest {
         assertEquals(result.compareTo(expected), 0);
     }
 
+    @Test
+    void multiply() {
+        Number p0 = new Number(new int[] {0}, 5, false);
+        Number p1 = new Number(new int[] {1}, 5, false);
+        Number p04 = new Number(new int[] {0,4}, 5, false); // 40
+        Number p4444 = new Number(new int[] {4,4,4,4}, 5, false);
+
+        Number n0 = new Number(new int[] {0}, 5, true);
+        Number n1 = new Number(new int[] {1}, 5, true);
+        Number n04 = new Number(new int[] {0,4}, 5, true);
+        Number n4444 = new Number(new int[] {4,4,4,4}, 5, true);
+
+        // Multiply positive numbers
+        multiplyTest(p0, n0, n0);
+        multiplyTest(p1, n1, n1);
+        multiplyTest(p1, n04, new Number(new int[] {0,4}, 5, true));
+        multiplyTest(p04, p1, new Number(new int[] {0,4}, 5, false));
+
+        // Multiply maximum numbers
+        multiplyTest(n4444, p4444, new Number(new int[] {1,0,0,0,3,4,4,4}, 5, true));
+        multiplyTest(n4444, n4444, new Number(new int[] {1,0,0,0,3,4,4,4}, 5, false));
+    }
+
+    void multiplyTest(Number n1, Number n2, Number expected) {
+        Number result = c.multiply(n1,n2);
+
+        assertEquals(result.compareTo(expected), 0);
+    }
+
+    void karatsubaTest(Number n1, Number n2, Number expected) {
+        Number result = c.karatsuba(n1,n2);
+
+        assertEquals(result.compareTo(expected), 0);
+    }
 }
