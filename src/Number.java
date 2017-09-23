@@ -1,4 +1,8 @@
 /**
+ * Authors:
+ * Adriaan Knapen - 0963981
+ *
+ *
  * Represents large signed integer numbers.
  */
 public class Number implements Comparable<Number> {

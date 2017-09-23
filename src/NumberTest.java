@@ -2,6 +2,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/* Authors:
+ * Adriaan Knapen - 0963981
+ *
+ */
+
 class NumberTest {
     @org.junit.jupiter.api.Test
     void getLength() {

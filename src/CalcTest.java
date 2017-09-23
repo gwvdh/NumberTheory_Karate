@@ -3,6 +3,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/* Authors:
+ * Wessel van der Heijden - 0951686
+ * Adriaan Knapen - 0963981
+ *
+ */
+
 class CalcTest {
     Calc c;
     final Number p0 = new Number(new int[] {0}, 5, false);

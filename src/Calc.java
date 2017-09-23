@@ -1,3 +1,8 @@
+/* Authors:
+ * Wessel van der Heijden - 0951686
+ * Adriaan Knapen - 0963981
+ */
+
 public class Calc {
 
     /**
