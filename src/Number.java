@@ -16,7 +16,7 @@ public class Number implements Comparable<Number> {
      * @param base The base (radix) of the number, should be positive and non zero.
      * @param negative True if the number should be negative, false otherwise.
      */
-    public Number(int[] value, int base, boolean negative, int mult, int add) {
+    public Number(int[] value, int base, boolean negative) {
         // Check if value is not null
         if (value == null) {
             throw new IllegalArgumentException("Value may not be null");
@@ -38,8 +38,8 @@ public class Number implements Comparable<Number> {
         this.base = base;
         this.negative = negative;
         this.num = value.clone();
-        this.multiplyCount = mult;
-        this.addCount = add;
+        //this.multiplyCount = mult;
+        //this.addCount = add;
     }
 
     /**
@@ -97,11 +97,23 @@ public class Number implements Comparable<Number> {
     }
 
     /**
+     * Setter of  many additions were needed to get this number after multiply or karatsuba.
+     * @param k how many additions were needed to get this number after multiply or karatsuba.
+     */
+    public void setAddCount(int k) { addCount = k;}
+
+    /**
+     * Setter of  many multiplications were needed to get this number after multiply or karatsuba.
+     * @param k how many multiplications were needed to get this number after multiply or karatsuba.
+     */
+    public void setMultiplyCount(int k) { multiplyCount = k;}
+
+    /**
      * Generates an inversed sign version of the current object.
      * @return Duplicate of the current object, but with changed sign.
      */
     public Number getSwitchedSign() {
-        return new Number(num, base, !getNegative(), multiplyCount, addCount);
+        return new Number(num, base, !getNegative());
     }
 
     @Override

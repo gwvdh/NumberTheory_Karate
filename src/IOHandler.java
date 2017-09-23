@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,19 +16,21 @@ public class IOHandler {
     public String operation;
     public Number x;
     public Number y;
+    public Number z;
 
     private int base;
     private File file;
     private File output;
     private FileOutputStream out;
     private Scanner sc;
+    private Boolean EnableCheck;
 
 
-    public IOHandler() {
+    public IOHandler(boolean CheckAnswer) {
 
         HasNext = true;
         try {
-            file = new File("example.txt");
+            file = new File("input.txt");
             output = new File("output.txt");
 
             //check existence, overwrite if it does exist
@@ -38,18 +42,22 @@ public class IOHandler {
 
             sc = new Scanner(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
+            System.out.println("input.txt was not found, aborting");
+            HasNext = false;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        }
+        EnableCheck = CheckAnswer;
+    }
     /**
      * Reads the next input block from the input file
      */
     public void readNext() {
 
         base = 1;
+        boolean comment = false;
         boolean gotNumbers = false;
 
         //loop until there is no more input or until the numbers are found
@@ -57,12 +65,15 @@ public class IOHandler {
 
             String s = sc.next();
             switch (s) {
+                case "#":
+                    comment = true;
+                    break;
                 case "[radix]":
                     base = sc.nextInt();
-                    System.out.println(base);
+                    //System.out.println(base);
                     break;
                 case "[add]":
-                case "[subtractUnsigned]":
+                case "[subtract]":
                 case "[multiply]":
                 case "[karatsuba]":
                     operation = s;
@@ -72,10 +83,15 @@ public class IOHandler {
                     break;
                 case "[y]":
                     y = initNumber(y);
-                    gotNumbers = true;
+                    if(!EnableCheck) {
+                        gotNumbers = true;
+                    }
                     break;
                 case "[answer]":
-                    System.out.println("comparing answers");
+                    if(EnableCheck) {
+                        z = initNumber(z);
+                        gotNumbers = true;
+                    }
                     break;
                 default:
                     sc.nextLine();
@@ -113,7 +129,8 @@ public class IOHandler {
         //account for minus sign
         int i = numArray.length - 1 + end;
         int c = 0;
-        //fill the digits in the array
+
+        //fill the digits in the array such that the end result is [a_{k}a_{k-1}...a_0] instead of [a_{0}a_{1}...a_k]
         for(; i >= end; i--) {
 
             charWord = num.charAt(i);
@@ -124,7 +141,7 @@ public class IOHandler {
 
 
         //use the array to create a new number
-        a = new Number(numArray, base, negative, 0, 0);
+        a = new Number(numArray, base, negative);
         return a;
 
     }

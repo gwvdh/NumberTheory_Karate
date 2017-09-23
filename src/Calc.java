@@ -222,6 +222,8 @@ public class Calc {
 
         int m = n1.getLength();
         int n = n2.getLength();
+        int additions = 0;
+        int multiplications = 0;
 
         int[] result = new int[m+n]; // In algorithm denoted as z
         for(int i : result){ //Set all elements in the result array to 0
@@ -231,7 +233,9 @@ public class Calc {
         int carry = 0;
         for(int i=0; i<m; i++){ //Get elements from one number, multiply with numbers from the other
             for(int j=0; j<n; j++){
+
                 int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry;
+
                 carry = t/base;
                 result[i+j] = t-carry*base;
                 /*System.out.printf("n: ");
@@ -255,7 +259,12 @@ public class Calc {
         int[] endResult = new int[i + 1];
         System.arraycopy(result, 0, endResult, 0, endResult.length);
         // Create a new number object with the results and return this.
-        return new Number(endResult, base, n1.getNegative() ^ n2.getNegative());
+        Number a = new Number(endResult, base, n1.getNegative() ^ n2.getNegative());
+
+        a.setAddCount(additions);
+        a.setMultiplyCount(multiplications);
+
+        return a;
     }
 
     /**
