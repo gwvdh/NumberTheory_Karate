@@ -252,9 +252,9 @@ public class Calc {
         for(int i=0; i<m; i++){ //Get elements from one number, multiply with numbers from the other
             for(int j=0; j<n; j++){
 
-                int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry; // Two additions, one multiplication
+                int t = result[i+j] + n1.getDigit(i) * n2.getDigit(j) + carry; // Two additions, one multiplication
                 carry = t/base;
-                result[i+j] = t-carry*base; // One subtraction, no multiplication (shift)
+                result[i+j] = t - carry * base; // One subtraction, no multiplication (shift)
                 multiplications += 1;
                 additions += 3;
                 /*System.out.printf("n: ");

@@ -22,27 +22,27 @@ public class Main {
         while(IO.HasNext) {
 
             IO.readNext();
-            // IO.x is a number, same for IO.y
+
             switch (IO.operation) {
                 case "[add]":
-                    c = op.add(IO.x, IO.y);
+                    c = op.add(IO.getX(), IO.getY());
                     break;
                 case "[subtract]":
-                    c = op.subtract(IO.x, IO.y);
+                    c = op.subtract(IO.getX(), IO.getY());
                     break;
                 case "[multiply]":
-                    c = op.multiply(IO.x, IO.y);
+                    c = op.multiply(IO.getX(), IO.getY());
                     break;
                 case "[karatsuba]":
-                    c = op.karatsuba(IO.x, IO.y);
+                    c = op.karatsuba(IO.getX(), IO.getY());
                     break;
                 default:
                     break;
 
             }
-            //test correctness
-            if(IO.z != null) {
-                System.out.println(c.compareTo(IO.z) == 0);
+            //test for correctness with a known answer
+            if(IO.getZ() != null) {
+                System.out.println(c.compareTo(IO.getZ()) == 0);
             }
 
             //keep track of which input it was

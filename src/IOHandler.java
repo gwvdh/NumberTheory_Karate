@@ -18,9 +18,9 @@ public class IOHandler {
 
     public boolean HasNext;
     public String operation;
-    public Number x;
-    public Number y;
-    public Number z;
+    private Number x;
+    private Number y;
+    private Number z;
 
     private int base;
     private File file;
@@ -56,6 +56,53 @@ public class IOHandler {
         EnableCheck = CheckAnswer;
         ScannerString = sc.next();
     }
+
+    /**
+     * Getter for x
+     * @return {@code Number x}
+     */
+    public Number getX() {
+        return x;
+    }
+
+    /**
+     * Getter for y
+     * @return {@code y}
+     */
+    public Number getY() {
+        return y;
+    }
+
+    /**
+     * Getter for z
+     * @return {@code Number z}
+     */
+    public Number getZ() {
+        return z;
+    }
+
+    /**
+     * Setter for x
+     * @modifies x
+     */
+    private void setX() {
+        x = initNumber(x);
+    }
+    /**
+     * Setter for y
+     * @modifies y
+     */
+    private void setY() {
+        y = initNumber(y);
+    }
+
+    /**
+     * Setter for z
+     * @modifies z
+     */
+    private void setZ() {
+        z = initNumber(z);
+    }
     /**
      * Reads the next input block from the input file
      */
@@ -79,14 +126,14 @@ public class IOHandler {
                     operation = ScannerString;
                     break;
                 case "[x]":
-                    x = initNumber(x);
+                    setX();
                     break;
                 case "[y]":
-                    y = initNumber(y);
+                    setY();
                     break;
                 case "[answer]":
                     if(EnableCheck) {
-                        z = initNumber(z);
+                        setZ();
                     }
                     break;
                 default:
@@ -102,6 +149,11 @@ public class IOHandler {
                 ScannerString = sc.next();
 
                 if (ScannerString.equals("[radix]")) {
+                    break;
+                } else if (!sc.hasNext()) {
+                    //consumed last bit of input and it was not the start of a new input
+                    //unimportant input
+                    HasNext = false;
                     break;
                 }
             } else {
