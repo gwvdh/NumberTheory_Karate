@@ -1,5 +1,9 @@
 /**
- * Created by s152124 on 7-9-2017.
+ * Author:
+ *
+ * Stefan Tanja - 0955022
+ *
+ * Main sequence of instructions
  */
 public class Main {
     Calc op;

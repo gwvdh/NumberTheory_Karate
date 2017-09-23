@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * Created by Stefan on 7-9-2017.
+ *  Author:
+ *
+ *  Stefan Tanja - 0955022
+ *
+ *  Handles the input and output for the program
  */
 
 public class IOHandler {
