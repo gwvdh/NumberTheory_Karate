@@ -5,6 +5,8 @@ public class Number implements Comparable<Number> {
     private int base;
     private boolean negative;
     private int[] num;
+    private int multiplyCount;
+    private int addCount;
 
     /**
      * Creates a new {@code Number} object.
@@ -36,6 +38,8 @@ public class Number implements Comparable<Number> {
         this.base = base;
         this.negative = negative;
         this.num = value.clone();
+        //this.multiplyCount = mult;
+        //this.addCount = add;
     }
 
     /**
@@ -76,6 +80,33 @@ public class Number implements Comparable<Number> {
         }
 
     }
+    /**
+     * Getter for the number of additions was performed to get this number.
+     * @return The number of additions was performed to get this number.
+     */
+    public int getAddCount() {
+        return addCount;
+    }
+
+    /**
+     * Getter for the number of multiplications was performed to get this number.
+     * @return The number of multiplications was performed to get this number.
+     */
+    public int getMultiplyCount() {
+        return multiplyCount;
+    }
+
+    /**
+     * Setter of  many additions were needed to get this number after multiply or karatsuba.
+     * @param k how many additions were needed to get this number after multiply or karatsuba.
+     */
+    public void setAddCount(int k) { addCount = k;}
+
+    /**
+     * Setter of  many multiplications were needed to get this number after multiply or karatsuba.
+     * @param k how many multiplications were needed to get this number after multiply or karatsuba.
+     */
+    public void setMultiplyCount(int k) { multiplyCount = k;}
 
     /**
      * Generates an inversed sign version of the current object.
