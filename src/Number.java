@@ -35,6 +35,8 @@ public class Number implements Comparable<Number> {
             throw new IllegalArgumentException("Base should be positive and non zero, is " + base);
         }
 
+        this.addCount = 0; //Initial
+        this.multiplyCount = 0; //Initial
         this.base = base;
         this.negative = negative;
         this.num = value.clone();

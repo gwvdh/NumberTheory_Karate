@@ -74,6 +74,9 @@ public class Calc {
             throw new IllegalArgumentException("Different sign");
         }
 
+        int additions = n1.getAddCount()+n2.getAddCount();
+        int multiplications = n1.getMultiplyCount()+n2.getMultiplyCount();
+
         // Loop through every index of both numbers and add their corresponding values.
         int base = n1.getBase(); // The base of both numbers.
         int length = Math.max(n1.getLength(), n2.getLength()); // The maximum length of the two numbers.
@@ -85,9 +88,11 @@ public class Calc {
             // Add the value of each digit, if it exists
             if (i < n1.getLength()) {
                 res += n1.getDigit(i);
+                additions++;
             }
             if (i < n2.getLength()) {
                 res += n2.getDigit(i);
+                additions++;
             }
 
             // res = n1.getDigit(i) + n2.getDigit(i) + carry
@@ -112,9 +117,11 @@ public class Calc {
         // Copy all non-leading zero digits.
         int[] endResult = new int[i + 1];
         System.arraycopy(result, 0, endResult, 0, endResult.length);
-
+        Number numberResult = new Number(endResult, base, n1.getNegative());
+        numberResult.setAddCount(additions);
+        numberResult.setMultiplyCount(multiplications);
         // Create a new number object with the results and return this.
-        return new Number(endResult, base, n1.getNegative());
+        return numberResult;
     }
 
     /**
@@ -166,6 +173,9 @@ public class Calc {
             throw new IllegalArgumentException("The absolute values of the first number of subtractUnsigned should be larger than the second.");
         }
 
+        int additions = n1.getAddCount()+n2.getAddCount();
+        int multiplications = n1.getMultiplyCount()+n2.getMultiplyCount();
+
         // Loop through every index of both numbers and subtract their corresponding values.
         int base = n1.getBase();
         int length = n1.getLength();
@@ -175,13 +185,16 @@ public class Calc {
             // Assume the digit of n2 to be zero if the current index exceeds n2s length.
             if (i < n2.getLength()) {
                 result[i] = n1.getDigit(i) - n2.getDigit(i) - carry;
+                additions++;
             } else {
                 result[i] = n1.getDigit(i) - carry;
+                additions++;
             }
 
             // Check if a carry (borrow) is required.
             if ( result[i] < 0){
                 result[i] = result[i] + base;
+                additions++;
                 carry = 1;
             } else {
                 carry = 0;
@@ -222,8 +235,8 @@ public class Calc {
 
         int m = n1.getLength();
         int n = n2.getLength();
-        int additions = 0;
-        int multiplications = 0;
+        int additions = n1.getAddCount()+n2.getAddCount();
+        int multiplications = n1.getMultiplyCount()+n2.getMultiplyCount();
 
         int[] result = new int[m+n]; // In algorithm denoted as z
         for(int i : result){ //Set all elements in the result array to 0
@@ -234,10 +247,11 @@ public class Calc {
         for(int i=0; i<m; i++){ //Get elements from one number, multiply with numbers from the other
             for(int j=0; j<n; j++){
 
-                int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry;
-
+                int t = result[i+j]+n1.getDigit(i) * n2.getDigit(j) + carry; // Two additions, one multiplication
                 carry = t/base;
-                result[i+j] = t-carry*base;
+                result[i+j] = t-carry*base; // One subtraction, no multiplication (shift)
+                multiplications += 1;
+                additions += 3;
                 /*System.out.printf("n: ");
                 for(int k=0; k<result.length; k++){
                     System.out.printf("%d",result[k]);
@@ -283,6 +297,9 @@ public class Calc {
             throw new IllegalArgumentException("Both numbers should have the same base");
         }
 
+        int additions = n1.getAddCount()+n2.getAddCount();
+        int multiplications = n1.getMultiplyCount()+n2.getMultiplyCount();
+
         int base = n1.getBase();
         int m = n1.getLength();
         int n = n2.getLength();
@@ -327,17 +344,26 @@ public class Calc {
         Number n2_hi = new Number(num_n2_hi, base, false);
 
         Number newLo = karatsuba(n1_lo,n2_lo); // Recurse call the multiplication
+        additions += newLo.getAddCount();
+        multiplications += newLo.getMultiplyCount();
+
         Number newHi = karatsuba(n1_hi,n2_hi); // Recurse call the multiplication
+        additions += newHi.getAddCount();
+        multiplications += newHi.getMultiplyCount();
+
         Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
+        additions += newMid.getAddCount();
+        multiplications += newMid.getMultiplyCount();
 
         int[] result = new int[n1.getLength()+n2.getLength()];
 
-        // Fill the result array with the nubers in the correct positions
+        // Fill the result array with the numbers in the correct positions
         for(int i=0; i<result.length; i++){
             if(i<newLo.getLength() && i>=lengthOfSplit*0){ // Low
                 int t = result[i] + newLo.getDigit(i);
                 int carry = t/newLo.getBase();
                 result[i] = t%newLo.getBase();
+                additions++;
                 if(i+1<result.length) {
                     result[i + 1] += carry;
                 }
@@ -346,6 +372,7 @@ public class Calc {
                 int t = result[i] + newMid.getDigit(i-lengthOfSplit*1);
                 int carry = t/newMid.getBase();
                 result[i] = t%newMid.getBase();
+                additions++;
                 if(i+1<result.length) {
                     result[i + 1] += carry;
                 }
@@ -354,6 +381,7 @@ public class Calc {
                 int t = result[i] + newHi.getDigit(i-lengthOfSplit*2);
                 int carry = t/newHi.getBase();
                 result[i] = t%newHi.getBase();
+                additions++;
                 if(i+1<result.length) {
                     result[i + 1] += carry;
                 }
@@ -371,6 +399,10 @@ public class Calc {
         System.arraycopy(result, 0, endResult, 0, endResult.length);
         Number finalResult = new Number(endResult, base, n1.getNegative() ^ n2.getNegative());
 
+        finalResult.setAddCount(additions);
+        finalResult.setMultiplyCount(multiplications);
+
+        System.out.println(finalResult.getAddCount()+","+ finalResult.getMultiplyCount());
         return finalResult;
     }
     // @TODO Implement other functions.
