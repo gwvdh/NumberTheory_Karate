@@ -103,6 +103,7 @@ class CalcTest {
         assertEquals(result.compareTo(expected), 0);
     }
 
+    @Test
     void sub() {
         // sub positive numbers
         subTest(p0, n0, n0);

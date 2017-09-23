@@ -286,9 +286,9 @@ public class Calc {
         //Split numbers if one is larger than 2
         int lengthOfSplit;
         if(m>=n){
-            lengthOfSplit = m/2+m%2;
+            lengthOfSplit = m/2+m%2; // Add 1 to the length if it is odd
         } else {
-            lengthOfSplit = n/2+n%2;
+            lengthOfSplit = n/2+n%2; // Add 1 to the length if it is odd
         }
 
         //Split numbers in half
@@ -317,14 +317,15 @@ public class Calc {
         Number n2_lo = new Number(num_n2_lo, base, false);
         Number n2_hi = new Number(num_n2_hi, base, false);
 
-        Number newLo = karatsuba(n1_lo,n2_lo);
-        Number newHi = karatsuba(n1_hi,n2_hi);
+        Number newLo = karatsuba(n1_lo,n2_lo); // Recurse call the multiplication
+        Number newHi = karatsuba(n1_hi,n2_hi); // Recurse call the multiplication
         Number newMid = subtract(subtract(karatsuba(add(n1_lo,n1_hi),add(n2_lo,n2_hi)),newLo),newHi);
 
         int[] result = new int[n1.getLength()+n2.getLength()];
 
+        // Fill the result array with the nubers in the correct positions
         for(int i=0; i<result.length; i++){
-            if(i<newLo.getLength() && i>=lengthOfSplit*0){
+            if(i<newLo.getLength() && i>=lengthOfSplit*0){ // Low
                 int t = result[i] + newLo.getDigit(i);
                 int carry = t/newLo.getBase();
                 result[i] = t%newLo.getBase();
@@ -332,7 +333,7 @@ public class Calc {
                     result[i + 1] += carry;
                 }
             }
-            if(i-lengthOfSplit*1<newMid.getLength() && i>=lengthOfSplit*1){
+            if(i-lengthOfSplit*1<newMid.getLength() && i>=lengthOfSplit*1){ // Mid
                 int t = result[i] + newMid.getDigit(i-lengthOfSplit*1);
                 int carry = t/newMid.getBase();
                 result[i] = t%newMid.getBase();
@@ -340,7 +341,7 @@ public class Calc {
                     result[i + 1] += carry;
                 }
             }
-            if(i-lengthOfSplit*2<newHi.getLength() && i>=lengthOfSplit*2){
+            if(i-lengthOfSplit*2<newHi.getLength() && i>=lengthOfSplit*2){ // High
                 int t = result[i] + newHi.getDigit(i-lengthOfSplit*2);
                 int carry = t/newHi.getBase();
                 result[i] = t%newHi.getBase();
@@ -363,6 +364,5 @@ public class Calc {
 
         return finalResult;
     }
-
     // @TODO Implement other functions.
 }
