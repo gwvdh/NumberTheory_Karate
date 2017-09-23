@@ -402,7 +402,6 @@ public class Calc {
         finalResult.setAddCount(additions);
         finalResult.setMultiplyCount(multiplications);
 
-        System.out.println(finalResult.getAddCount()+","+ finalResult.getMultiplyCount());
         return finalResult;
     }
     // @TODO Implement other functions.
