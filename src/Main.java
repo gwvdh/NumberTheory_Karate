@@ -3,12 +3,11 @@
  */
 public class Main {
 
-    //Calc op = new Calc();
-    IOHandler IO = new IOHandler();
+    Calc op = new Calc();
+    final IOHandler IO = new IOHandler();
 
     void run() {
 
-        int count = 1;
         while(IO.HasNext) {
             Number c = null;
             IO.readNext();
@@ -28,13 +27,10 @@ public class Main {
                     break;
                 default:
                     break;
-
             }
-
-            IO.print(IO.x, count);
-            count++;
+            IO.print(c);
         }
-        IO.close();
+
     }
 
     public static void main(String [] args) {

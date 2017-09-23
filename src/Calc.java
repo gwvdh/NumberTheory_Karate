@@ -80,7 +80,7 @@ public class Calc {
         int[] result = new int[length + 1]; // Array to write the result to, has one extra digit to prevent overflow.
         int carry = 0; // Keeps track of the carry.
         for(int i = 0; i < result.length; i++){
-                int res = carry;
+            int res = carry;
 
             // Add the value of each digit, if it exists
             if (i < n1.getLength()) {
