@@ -24,7 +24,7 @@ public class IOHandler {
     private FileOutputStream out;
     private Scanner sc;
     private Boolean EnableCheck;
-
+    private String ScannerString;
 
     public IOHandler(boolean CheckAnswer) {
 
@@ -50,6 +50,7 @@ public class IOHandler {
             e.printStackTrace();
         }
         EnableCheck = CheckAnswer;
+        ScannerString = sc.next();
     }
     /**
      * Reads the next input block from the input file
@@ -57,17 +58,12 @@ public class IOHandler {
     public void readNext() {
 
         base = 1;
-        boolean comment = false;
-        boolean gotNumbers = false;
 
         //loop until there is no more input or until the numbers are found
-        while(sc.hasNext() && !gotNumbers) {
 
-            String s = sc.next();
-            switch (s) {
-                case "#":
-                    comment = true;
-                    break;
+        while(sc.hasNext()) {
+
+            switch (ScannerString) {
                 case "[radix]":
                     base = sc.nextInt();
                     //System.out.println(base);
@@ -76,31 +72,42 @@ public class IOHandler {
                 case "[subtract]":
                 case "[multiply]":
                 case "[karatsuba]":
-                    operation = s;
+                    operation = ScannerString;
                     break;
                 case "[x]":
                     x = initNumber(x);
                     break;
                 case "[y]":
                     y = initNumber(y);
-                    if(!EnableCheck) {
-                        gotNumbers = true;
-                    }
                     break;
                 case "[answer]":
                     if(EnableCheck) {
                         z = initNumber(z);
-                        gotNumbers = true;
                     }
                     break;
                 default:
                     sc.nextLine();
                     break;
             }
+            //look until another [radix] header has been found - the start of the next input
+            //break if it is found
+            //if not found:
+            //set HasNext to false so that main will stop probing the IOHandler for input
+            //break the loop as there will be no more input
+            if (sc.hasNext()) {
+                ScannerString = sc.next();
+
+                if (ScannerString.equals("[radix]")) {
+                    break;
+                }
+            } else {
+                HasNext = false;
+                break;
+            }
 
         }
 
-        HasNext = sc.hasNext();
+
 
     }
 
